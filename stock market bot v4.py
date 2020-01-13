@@ -1,3 +1,24 @@
+#from selenium import webdriver
+import time
+#driver = webdriver.Chrome('/Users/PC/Downloads/chromedriver')
+#driver.get("https://www.pythonanywhere.com/user/luscsus/tasks_tab/")
+
+#time.sleep(5)
+
+#driver.find_element_by_id("id_auth-username").send_keys("luscsus")
+
+#time.sleep(1)
+
+#driver.find_element_by_id("id_auth-password").send_keys("PecenaPecenka1")
+
+#time.sleep(1)
+
+#driver.find_element_by_id("id_next").click()
+
+#time.sleep(1)
+
+#driver.find_element_by_class_name("btn btn-success extend_scheduled_task").click()
+
 closed = True
 own_stock_position = False
 own_stock_orders = False
@@ -7,13 +28,10 @@ while True:
     symbols = {
         "UGAZ",
         "A",
-        "CPAH",
-        "MSFT"
+        "CPAH"
     }
     for key in symbols:
-        print(key)
         import alpaca_trade_api as tradeapi
-        import time
         from datetime import date
         import requests
         import smtplib
@@ -25,7 +43,7 @@ while True:
         base_url = "https://paper-api.alpaca.markets"
         alpha_vantage_key = "D0Y6Q88STILCVF3D"
         email = "luka1.grobelnik@gmail.com"
-        password = "PecenaPecenka1"
+        password = "PecenaPecenka12"
         send_to_email = "luka1.grobelnik@gmail.com"
         subject = "Stock market bot info"
         today = date.today()
@@ -76,7 +94,7 @@ while True:
                 balance_change = float(account.equity) - float(account.last_equity)
                 print("Account equity today: " + account.equity)
                 print("Account equity yesterday: " + account.last_equity)
-                print(f'Today\'s portfolio balance change: ${balance_change}')
+                print(f"Today\'s portfolio balance change: $ {balance_change}")
                 print(time_now)
 
                 message = "Account equity today: " + str(account.equity) + " Balance change: " + str(balance_change)
@@ -97,6 +115,7 @@ while True:
                 closed = False
             time.sleep(60)
         if run:
+            print(key)
             stocks_num = False
 
             # Check if our account is restricted from trading.
@@ -144,7 +163,8 @@ while True:
                 sell_stock()
                 today_stocks.update({key: time_now})
 
-            if own_stock_orders is False and own_stock_position is False:
+            if own_stock_orders is False and own_stock_position is False and money > price:
                 buy_stock()
                 today_stocks.update({key: time_now})
             time.sleep(60)
+
