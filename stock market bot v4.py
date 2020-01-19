@@ -1,24 +1,3 @@
-#from selenium import webdriver
-import time
-#driver = webdriver.Chrome('/Users/PC/Downloads/chromedriver')
-#driver.get("https://www.pythonanywhere.com/user/luscsus/tasks_tab/")
-
-#time.sleep(5)
-
-#driver.find_element_by_id("id_auth-username").send_keys("luscsus")
-
-#time.sleep(1)
-
-#driver.find_element_by_id("id_auth-password").send_keys("PecenaPecenka1")
-
-#time.sleep(1)
-
-#driver.find_element_by_id("id_next").click()
-
-#time.sleep(1)
-
-#driver.find_element_by_class_name("btn btn-success extend_scheduled_task").click()
-
 closed = True
 own_stock_position = False
 own_stock_orders = False
@@ -31,6 +10,7 @@ while True:
         "MSFT"
     }
     for key in symbols:
+        import time
         from passwords import secret_key, id_key, alpha_vantage_key, email, password, send_to_email
         import alpaca_trade_api as tradeapi
         from datetime import date
