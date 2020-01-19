@@ -26,9 +26,9 @@ own_stocks_today = False
 today_stocks = {}
 while True:
     symbols = {
-        "UGAZ",
         "A",
-        "CPAH"
+        "CPAH",
+        "MSFT"
     }
     for key in symbols:
         import alpaca_trade_api as tradeapi
@@ -38,16 +38,12 @@ while True:
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
         url = "https://alpha-vantage.p.rapidapi.com/query"
-        secret_key = "XnA6Xt4yozPU6ahetDISm85Hy25JW7RrMX1F1ero"
-        id_key = "PKYPNI59O9KFST9MMUP2"
         base_url = "https://paper-api.alpaca.markets"
-        alpha_vantage_key = "D0Y6Q88STILCVF3D"
-        email = "luka1.grobelnik@gmail.com"
-        password = "PecenaPecenka12"
-        send_to_email = "luka1.grobelnik@gmail.com"
         subject = "Stock market bot info"
         today = date.today()
         time_now = today.strftime("%d/%m/%Y")
+        time_now_week = today.strftime("%Y-%m-%d")
+
         if key in today_stocks:
             today_stock = today_stocks[key]
             if today_stock == time_now:
@@ -65,7 +61,11 @@ while True:
         portfolio = api.list_positions()
         for position in portfolio:
             if position.symbol == key:
+                num_stocks = position.qty
+                portfolio_money_change = position.unrealized_pl
                 own_stock_position = True
+            else:
+                own_stock_position = False
         orders = api.list_orders(
             status='open',
             limit=10
@@ -128,14 +128,16 @@ while True:
                 money = float(account.buying_power) / 3
 
             r = requests.get(
-               "https://www.alphavantage.co/query?function=Global_Quote&symbol=" + key + "&apikey=" + alpha_vantage_key)
+                "https://www.alphavantage.co/query?function=Global_Quote&symbol=" + key + "&apikey=" + alpha_vantage_key)
             result = r.json()
-            price_high = result['Global Quote']['03. high']
-            price_low = result['Global Quote']['04. low']
+            p = requests.get(
+                "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + key + "&apikey=" + alpha_vantage_key)
+            result1 = p.json()
+            price_high = result1["Weekly Time Series"][time_now_week]['2. high']
+            price_low = result1["Weekly Time Series"][time_now_week]['3. low']
             price = result['Global Quote']['05. price']
 
             limit_buy = float(price_low) + (float(price_low) * 0.5 / 100)
-            limit_sell = float(price_high) - (float(price_high) * 0.5 / 100)
 
             def buy_stock():
                 api.submit_order(
@@ -151,20 +153,20 @@ while True:
             def sell_stock():
                 api.submit_order(
                     symbol=key,
-                    qty=1,
+                    qty=num_stocks,
                     side='sell',
-                    type='limit',
-                    limit_price=limit_sell,
+                    type='market',
                     time_in_force='gtc'
                 )
                 print("sold")
 
-            if own_stock_position and own_stocks_today is False and own_stock_orders is False:
+            if own_stock_position and own_stocks_today is False and own_stock_orders is False and float(portfolio_money_change) >= 2:
                 sell_stock()
                 today_stocks.update({key: time_now})
 
-            if own_stock_orders is False and own_stock_position is False and money > price:
+            if own_stock_orders is False and own_stock_position is False and float(money) > float(price):
                 buy_stock()
                 today_stocks.update({key: time_now})
             time.sleep(60)
+
 
