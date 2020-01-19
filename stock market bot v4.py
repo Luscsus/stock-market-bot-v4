@@ -11,7 +11,7 @@ while True:
     }
     for key in symbols:
         import time
-        from passwords import secret_key, id_key, alpha_vantage_key, email, password, send_to_email
+        from passwords/blob/master/passwords import secret_key, id_key, alpha_vantage_key, email, password, send_to_email
         import alpaca_trade_api as tradeapi
         from datetime import date
         import requests
