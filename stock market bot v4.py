@@ -31,6 +31,7 @@ while True:
         "MSFT"
     }
     for key in symbols:
+        from passwords import secret_key, id_key, alpha_vantage_key, email, password, send_to_email
         import alpaca_trade_api as tradeapi
         from datetime import date
         import requests
